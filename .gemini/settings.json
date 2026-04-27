@@ -1,0 +1,12 @@
+{
+  "tools": {
+    "sandbox": "docker"
+  },
+  "model": "gemma4:e4b",
+  "providers": {
+    "ollama": {
+      "baseUrl": "http://localhost:11434",
+      "model": "gemma4:e4b"
+    }
+  }
+}
