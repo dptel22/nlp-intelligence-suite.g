@@ -10,6 +10,12 @@ import pandas as pd
 st.title("NLP Intelligence Suite")
 user_text = st.text_area("Paste your text here", height=200, key="user_input")
 
+# --- Corpus lives OUTSIDE the Analyze block so Save button never triggers a full rerun ---
+from pipeline.corpus_manager import CorpusManager
+if "corpus" not in st.session_state:
+    st.session_state.corpus = CorpusManager()
+corpus = st.session_state.corpus
+
 if st.button("Analyze", type="primary") and user_text.strip():
     tab1, tab2, tab3, tab4, tab5 = st.tabs(["Preprocessing","Morphology & LM","Syntactic Analysis","Text Generation","Corpus Stats"])
 
@@ -78,11 +84,12 @@ if st.button("Analyze", type="primary") and user_text.strip():
 
     with tab4:
         try:
-            from pipeline.generator import TextGenerator
             wc = len(user_text.split())
             if wc >= 30:
                 cache_key = f"gen_{hash(user_text)}"
                 if cache_key not in st.session_state:
+                    # Import TF only here — keeps startup fast
+                    from pipeline.generator import TextGenerator
                     g = TextGenerator(user_text)
                     g.prepare_data()
                     g.build_model()
@@ -102,13 +109,9 @@ if st.button("Analyze", type="primary") and user_text.strip():
 
     with tab5:
         try:
-            from pipeline.corpus_manager import CorpusManager
-            if "corpus" not in st.session_state:
-                st.session_state.corpus = CorpusManager()
-            corpus = st.session_state.corpus
             if st.button("Save to Corpus"):
                 corpus.add_text(user_text)
-                st.success("Saved!")
+                st.success(f"Saved! Corpus now has {corpus.get_stats()['total_texts']} text(s).")
             if not corpus.is_empty():
                 stats = corpus.get_stats()
                 c1,c2,c3,c4 = st.columns(4)
@@ -137,7 +140,7 @@ if st.button("Analyze", type="primary") and user_text.strip():
                     st.metric("Sentiment", pred["label"].upper())
                     st.metric("Confidence", f"{pred['confidence']:.1%}")
             else:
-                st.info("No texts in corpus yet. Click Save to Corpus above.")
+                st.info("No texts in corpus yet. Click 'Save to Corpus' above.")
         except Exception as e:
             st.error(f"Corpus error: {e}")
             st.exception(e)
