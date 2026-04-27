@@ -4,7 +4,7 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 from nltk.corpus import stopwords, wordnet
 from nltk.tokenize import word_tokenize
 
-for r in ["punkt", "stopwords", "averaged_perceptron_tagger", "wordnet", "punkt_tab"]:
+for r in ["punkt", "stopwords", "averaged_perceptron_tagger", "averaged_perceptron_tagger_eng", "wordnet", "punkt_tab"]:
     nltk.download(r, quiet=True)
 
 
