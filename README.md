@@ -10,10 +10,9 @@ A multi-tab Streamlit web app that runs a full NLP pipeline on any input text.
 - **Tab 5 - Corpus Stats**: Vocabulary stats, TTR, sentiment classifier (trained on NLTK movie_reviews)
 
 ## Setup
-pip install -r nlp-suite/requirements.txt
+pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 streamlit run nlp-suite/app.py
 
 ## Stack
-Python · Streamlit · NLTK · spaCy · scikit-learn · TensorFlow · Plotly
-
+Python - Streamlit - NLTK - spaCy - scikit-learn - TensorFlow - Plotly

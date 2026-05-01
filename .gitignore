@@ -64,3 +64,4 @@ pyvenv.cfg
 
 .gemini/
 
+/tests/test_static_project_health.py
