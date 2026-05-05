@@ -60,10 +60,23 @@ class TextGenerator:
                 encoded = self.tokenizer.texts_to_sequences([result])[0]
                 encoded = pad_sequences([encoded], maxlen=self.seq_length, padding="pre")
                 probs = self.model.predict(encoded, verbose=0)
-                idx = np.argmax(probs[0])
-                word = self.tokenizer.index_word.get(idx, "")
-                if word:
-                    result += " " + word
+                recent = result.lower().split()[-3:]
+                word = ""
+
+                for idx in np.argsort(probs[0])[::-1]:
+                    candidate = self.tokenizer.index_word.get(int(idx), "")
+                    if not candidate:
+                        continue
+                    if recent and candidate == recent[-1]:
+                        continue
+                    if recent.count(candidate) >= 2:
+                        continue
+                    word = candidate
+                    break
+
+                if not word:
+                    break
+                result += " " + word
             return result
         except Exception as e:
             return seed_text + f" [generation failed: {e}]"
